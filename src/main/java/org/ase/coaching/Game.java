@@ -28,16 +28,20 @@ public class Game {
     }
 
 
-    public void makeMove(Command command) {
+    public Operation makeMove(Command command) {
         if (command.equals(new Command("ende"))) {
             currentPlayer = Player.Empty;
-            return;
+            return Operation.CONTROL;
         }
         if (command.equals(new Command("start"))) {
             reset();
-            return;
+            return Operation.CONTROL;
         }
-        field.getCell(command.getRow(), command.getColumn()).setPlayer(currentPlayer);
+        Cell cell = field.getCell(command.getRow(), command.getColumn());
+        if (cell.getPlayer() != Player.Empty) {
+            return Operation.INVALID_MOVE;
+        }
+        cell.setPlayer(currentPlayer);
         winner = field.getWinner();
         switch (winner) {
             case X -> action = "Winner = X";
@@ -45,6 +49,7 @@ public class Game {
             case Empty -> action = "Kommando:";
         }
         currentPlayer = currentPlayer.toggle();
+        return Operation.VALID_MOVE;
     }
 
     private void reset() {

@@ -57,4 +57,16 @@ class GameTest {
 
         assertThat(sut.getWinner()).isEqualTo(Player.X);
     }
+
+    @Test
+    void movingToAlreadyUsedCellRepeatsCurrentPlayerTurn() {
+        Game sut = new Game();
+
+        sut.makeMove(new Command("A0"));
+        var move = sut.makeMove(new Command("A0"));
+        Player player = sut.getPlayer();
+
+        assertThat(move).isEqualTo(Operation.INVALID_MOVE);
+        assertThat(player).isEqualTo(Player.O);
+    }
 }
