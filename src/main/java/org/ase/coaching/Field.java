@@ -1,11 +1,7 @@
 package org.ase.coaching;
 
 public class Field {
-    private Player player;
-
-    public boolean isEmpty() {
-        return player == null;
-    }
+    private Player player = Player.Empty;
 
     public Player getPlayer() {
         return player;
