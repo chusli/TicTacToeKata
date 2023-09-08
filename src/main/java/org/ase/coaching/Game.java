@@ -2,7 +2,8 @@ package org.ase.coaching;
 
 public class Game {
 
-    String action;
+    final String action = "Kommando:";
+    String winnerNotification = "";
     private Field field;
     private Player currentPlayer;
     private Player winner;
@@ -24,16 +25,20 @@ public class Game {
                 "2%s|%s|%s\n".formatted(field.getCell(2, 0).getPlayer().getRepresentation(),
                         field.getCell(2, 1).getPlayer().getRepresentation(),
                         field.getCell(2, 2).getPlayer().getRepresentation()) +
+                winnerNotification +
                 action;
     }
 
 
     public Operation makeMove(Command command) {
+        if (gameOver()) {
+            return Operation.GAME_OVER;
+        }
         if (command.equals(new Command("ende"))) {
             currentPlayer = Player.Empty;
             return Operation.CONTROL;
         }
-        if (command.equals(new Command("start"))) {
+        if (command.equals(new Command("start")) || command.equals(new Command("neu"))) {
             reset();
             return Operation.CONTROL;
         }
@@ -44,17 +49,21 @@ public class Game {
         cell.setPlayer(currentPlayer);
         winner = field.getWinner();
         switch (winner) {
-            case X -> action = "Winner = X";
-            case O -> action = "Winner = O";
-            case Empty -> action = "Kommando:";
+            case X -> winnerNotification = "*** Spieler 1 gewinnt\n";
+            case O -> winnerNotification = "*** Spieler 2 gewinnt\n";
         }
         currentPlayer = currentPlayer.toggle();
         return Operation.VALID_MOVE;
     }
 
+    private boolean gameOver() {
+        return getWinner() != Player.Empty;
+    }
+
     private void reset() {
         currentPlayer = Player.X;
-        action = "Kommando:";
+        winner = Player.Empty;
+        winnerNotification = "";
         field = new Field();
     }
 
