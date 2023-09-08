@@ -45,4 +45,16 @@ class GameTest {
 
         assertThat(actual).isEqualTo(Player.X);
     }
+
+    @Test
+    void gameShowsWinner() {
+        Game sut = new Game();
+        sut.makeMove(new Command("A0"));
+        sut.makeMove(new Command("B0"));
+        sut.makeMove(new Command("A1"));
+        sut.makeMove(new Command("B1"));
+        sut.makeMove(new Command("A2"));
+
+        assertThat(sut.getWinner()).isEqualTo(Player.X);
+    }
 }
