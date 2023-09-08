@@ -14,4 +14,12 @@ public enum Player {
     public String getRepresentation() {
         return representation;
     }
+
+    public Player toggle() {
+        return switch (this) {
+            case Empty -> Player.X;
+            case X -> Player.O;
+            case O -> Player.X;
+        };
+    }
 }

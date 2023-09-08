@@ -24,7 +24,7 @@ class GameTest {
     @Test
     void getStateAfterFirstMove() {
         Game sut = new Game();
-        sut.makeMove(Player.X, 0, 0);
+        sut.makeMove(new Command("A0"));
 
         String actual = sut.getState();
 
@@ -35,5 +35,14 @@ class GameTest {
                 " -+-+-  \n" +
                 "2 | | \n" +
                 "Kommando:");
+    }
+
+    @Test
+    void gameStartsWithPlayerX() {
+        Game sut = new Game();
+
+        Player actual = sut.getPlayer();
+
+        assertThat(actual).isEqualTo(Player.X);
     }
 }

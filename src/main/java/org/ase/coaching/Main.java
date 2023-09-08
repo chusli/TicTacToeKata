@@ -6,17 +6,12 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Game game = new Game();
-
-
-        Player player = Player.X;
         do {
             System.out.println(game.getState());
             var command = readCommand();
+            game.makeMove(command);
 
-            game.makeMove(player, command);
-            player = player == Player.X ? Player.O : Player.X;
-
-        } while (1 == 1);
+        } while (true);
     }
 
     private static Command readCommand() {

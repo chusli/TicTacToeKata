@@ -4,6 +4,7 @@ public class Game {
 
     private final Field field = new Field();
     String action = "Kommando:";
+    private Player currentPlayer = Player.X;
 
     public String getState() {
         return " A B C \n" +
@@ -21,23 +22,19 @@ public class Game {
                 action;
     }
 
-    public void makeMove(Player player, int row, int column) {
-        field.getCell(row, column).setPlayer(player);
+
+    public void makeMove(Command command) {
+        field.getCell(command.getRow(), command.getColumn()).setPlayer(currentPlayer);
         var winner = field.getWinner();
         switch (winner) {
             case X -> action = "Winner = X";
             case O -> action = "Winner = O";
             case Empty -> action = "Kommando:";
         }
+        currentPlayer = currentPlayer.toggle();
     }
 
-    public void makeMove(Player player, Command command) {
-        field.getCell(command.getRow(), command.getColumn()).setPlayer(player);
-        var winner = field.getWinner();
-        switch (winner) {
-            case X -> action = "Winner = X";
-            case O -> action = "Winner = O";
-            case Empty -> action = "Kommando:";
-        }
+    public Player getPlayer() {
+        return currentPlayer;
     }
 }
