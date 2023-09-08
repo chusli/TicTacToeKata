@@ -34,6 +34,7 @@ public class Game {
         if (gameOver()) {
             return Operation.GAME_OVER;
         }
+
         if (command.equals(new Command("ende"))) {
             currentPlayer = Player.Empty;
             return Operation.CONTROL;
@@ -47,6 +48,10 @@ public class Game {
             return Operation.INVALID_MOVE;
         }
         cell.setPlayer(currentPlayer);
+        if (stalemate()) {
+            winnerNotification = "*** Kein Gewinner\n";
+            return Operation.GAME_OVER;
+        }
         winner = field.getWinner();
         switch (winner) {
             case X -> winnerNotification = "*** Spieler 1 gewinnt\n";
@@ -54,6 +59,10 @@ public class Game {
         }
         currentPlayer = currentPlayer.toggle();
         return Operation.VALID_MOVE;
+    }
+
+    private boolean stalemate() {
+        return field.getCells().stream().allMatch(cell -> cell.getPlayer() != Player.Empty);
     }
 
     private boolean gameOver() {

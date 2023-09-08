@@ -2,6 +2,8 @@ package org.ase.coaching;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -107,6 +109,33 @@ class GameTest {
                 "1 | | \n" +
                 " -+-+-  \n" +
                 "2 | | \n" +
+                "Kommando:");
+    }
+
+    @Test
+    void stalemate() {
+        Game sut = new Game();
+
+        var moves = List.of(
+                sut.makeMove(new Command("A0")),
+                sut.makeMove(new Command("B0")),
+                sut.makeMove(new Command("A1")),
+                sut.makeMove(new Command("B1")),
+                sut.makeMove(new Command("B2")),
+                sut.makeMove(new Command("A2")),
+                sut.makeMove(new Command("C0")),
+                sut.makeMove(new Command("C1")),
+                sut.makeMove(new Command("C2")));
+
+        var actual = sut.getState();
+
+        assertThat(sut.getState()).isEqualTo(" A B C \n" +
+                "0X|O|X\n" +
+                " -+-+-  \n" +
+                "1X|O|O\n" +
+                " -+-+-  \n" +
+                "2O|X|X\n" +
+                "*** Kein Gewinner\n" +
                 "Kommando:");
     }
 }
