@@ -6,7 +6,7 @@ import java.util.Objects;
 public class Command {
     private static final List<String> VALIDCOLUMNS = List.of("A", "B", "C");
     private static final List<String> VALIDROWS = List.of("0", "1", "2");
-    private static final List<String> VALID_GAME_COMMANDS = List.of("end", "start");
+    private static final List<String> VALID_GAME_COMMANDS = List.of("ende", "start");
     private final String command;
 
     public Command(String command) {

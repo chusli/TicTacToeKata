@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class CommandTest {
 
     @ParameterizedTest
-    @ValueSource(strings = {"A0", "A1", "A2", "B0", "B1", "B2", "C0", "C1", "C2", "end", "start"})
+    @ValueSource(strings = {"A0", "A1", "A2", "B0", "B1", "B2", "C0", "C1", "C2", "ende", "start"})
     void valid(String command) {
         Command sut = new Command(command);
 

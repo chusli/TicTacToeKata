@@ -11,7 +11,7 @@ public class Main {
             var command = readCommand();
             game.makeMove(command);
 
-        } while (true);
+        } while (game.getPlayer() != Player.Empty);
     }
 
     private static Command readCommand() {

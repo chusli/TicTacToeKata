@@ -2,10 +2,14 @@ package org.ase.coaching;
 
 public class Game {
 
-    private final Field field = new Field();
-    String action = "Kommando:";
-    private Player currentPlayer = Player.X;
+    String action;
+    private Field field;
+    private Player currentPlayer;
     private Player winner;
+
+    public Game() {
+        reset();
+    }
 
     public String getState() {
         return " A B C \n" +
@@ -25,6 +29,14 @@ public class Game {
 
 
     public void makeMove(Command command) {
+        if (command.equals(new Command("ende"))) {
+            currentPlayer = Player.Empty;
+            return;
+        }
+        if (command.equals(new Command("start"))) {
+            reset();
+            return;
+        }
         field.getCell(command.getRow(), command.getColumn()).setPlayer(currentPlayer);
         winner = field.getWinner();
         switch (winner) {
@@ -33,6 +45,12 @@ public class Game {
             case Empty -> action = "Kommando:";
         }
         currentPlayer = currentPlayer.toggle();
+    }
+
+    private void reset() {
+        currentPlayer = Player.X;
+        action = "Kommando:";
+        field = new Field();
     }
 
     public Player getPlayer() {
