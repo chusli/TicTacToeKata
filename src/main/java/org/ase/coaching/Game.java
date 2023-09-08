@@ -3,6 +3,7 @@ package org.ase.coaching;
 public class Game {
 
     private final Field field = new Field();
+    String action = "Kommando:";
 
     public String getState() {
         return " A B C \n" +
@@ -17,10 +18,16 @@ public class Game {
                 "2%s|%s|%s\n".formatted(field.getCell(2, 0).getPlayer().getRepresentation(),
                         field.getCell(2, 1).getPlayer().getRepresentation(),
                         field.getCell(2, 2).getPlayer().getRepresentation()) +
-                "Kommando:";
+                action;
     }
 
     public void makeMove(Player player, int row, int column) {
         field.getCell(row, column).setPlayer(player);
+        var winner = field.getWinner();
+        switch (winner) {
+            case X -> action = "Winner = X";
+            case O -> action = "Winner = O";
+            case Empty -> action = "Kommando:";
+        }
     }
 }
