@@ -30,4 +30,14 @@ public class Game {
             case Empty -> action = "Kommando:";
         }
     }
+
+    public void makeMove(Player player, Command command) {
+        field.getCell(command.getRow(), command.getColumn()).setPlayer(player);
+        var winner = field.getWinner();
+        switch (winner) {
+            case X -> action = "Winner = X";
+            case O -> action = "Winner = O";
+            case Empty -> action = "Kommando:";
+        }
+    }
 }

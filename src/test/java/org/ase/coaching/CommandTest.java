@@ -1,5 +1,6 @@
 package org.ase.coaching;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -21,5 +22,19 @@ class CommandTest {
         Command sut = new Command(command);
 
         assertThat(sut.isValid()).isFalse();
+    }
+
+    @Test
+    void getColumn() {
+        Command sut = new Command("B2");
+
+        assertThat(sut.getColumn()).isEqualTo(1);
+    }
+
+    @Test
+    void getRow() {
+        Command sut = new Command("B2");
+
+        assertThat(sut.getRow()).isEqualTo(2);
     }
 }
