@@ -5,13 +5,13 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class FieldTest {
+class CellTest {
 
 
     @ParameterizedTest
     @EnumSource(Player.class)
     void setFieldToCross(Player inputPlayer) {
-        Field sut = new Field();
+        Cell sut = new Cell();
 
         sut.setPlayer(inputPlayer);
 

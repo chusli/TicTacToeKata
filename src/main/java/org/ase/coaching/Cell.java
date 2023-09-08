@@ -1,6 +1,6 @@
 package org.ase.coaching;
 
-public class Field {
+public class Cell {
     private Player player = Player.Empty;
 
     public Player getPlayer() {
