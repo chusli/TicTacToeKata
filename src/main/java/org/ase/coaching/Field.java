@@ -20,4 +20,7 @@ public class Field {
         return Arrays.stream(cells).flatMap(Arrays::stream).toList();
     }
 
+    public Cell getCell(int row, int column) {
+        return cells[row][column];
+    }
 }

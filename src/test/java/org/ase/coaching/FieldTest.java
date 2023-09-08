@@ -26,4 +26,14 @@ class FieldTest {
 
         assertThat(cells).hasSize(9);
     }
+
+    @Test
+    void changeCell() {
+        Field sut = new Field();
+        sut.getCell(1, 1).setPlayer(Player.X);
+
+        var actual = sut.getCell(1, 1);
+
+        assertThat(actual.getPlayer()).isEqualTo(Player.X);
+    }
 }
