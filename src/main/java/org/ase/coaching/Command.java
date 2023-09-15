@@ -2,6 +2,7 @@ package org.ase.coaching;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Scanner;
 
 public class Command {
     private static final List<String> VALIDCOLUMNS = List.of("A", "B", "C");
@@ -17,6 +18,15 @@ public class Command {
         return VALIDCOLUMNS.stream()
                 .flatMap(column -> VALIDROWS.stream().map(row -> new Command(column + row)))
                 .toList();
+    }
+
+    public static Command readCommand() {
+        Scanner in = new Scanner(System.in);
+        Command command;
+        do {
+            command = new Command(in.nextLine());
+        } while (command == null || !command.isValid());
+        return command;
     }
 
     public boolean isValid() {

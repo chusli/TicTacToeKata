@@ -4,9 +4,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatException;
 
 class CommandTest {
 
@@ -54,5 +58,25 @@ class CommandTest {
                 new Command("C0"),
                 new Command("C1"),
                 new Command("C2"));
+    }
+
+    @Test
+    void readCommandWhenValidInputProvidedThenReturnCommand() {
+        final String input = "A0";
+        InputStream in = new ByteArrayInputStream(input.getBytes());
+        System.setIn(in);
+
+        Command actual = Command.readCommand();
+
+        assertThat(actual).isEqualTo(new Command("A0"));
+    }
+
+    @Test
+    void readCommandWhenInvalidInputProvidedThenAwaitNewCommand() {
+        final String input = "EEEEE";
+        InputStream in = new ByteArrayInputStream(input.getBytes());
+        System.setIn(in);
+
+        assertThatException().isThrownBy(Command::readCommand).isInstanceOf(NoSuchElementException.class);
     }
 }
