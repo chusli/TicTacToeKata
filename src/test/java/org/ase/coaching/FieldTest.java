@@ -48,4 +48,16 @@ class FieldTest {
 
         assertThat(winner).isEqualTo(Player.X);
     }
+
+    @Test
+    void playerOWins() {
+        Field sut = new Field();
+        sut.getCell(0, 0).setPlayer(Player.O);
+        sut.getCell(0, 1).setPlayer(Player.O);
+        sut.getCell(0, 2).setPlayer(Player.O);
+
+        Player winner = sut.getWinner();
+
+        assertThat(winner).isEqualTo(Player.O);
+    }
 }

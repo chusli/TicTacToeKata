@@ -2,8 +2,6 @@ package org.ase.coaching;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -14,13 +12,14 @@ class GameTest {
 
         String actual = sut.getState();
 
-        assertThat(actual).isEqualTo(" A B C \n" +
-                "0 | | \n" +
-                " -+-+-  \n" +
-                "1 | | \n" +
-                " -+-+-  \n" +
-                "2 | | \n" +
-                "Kommando:");
+        assertThat(actual).isEqualTo("""
+                 A B C\s
+                0 | |\s
+                 -+-+- \s
+                1 | |\s
+                 -+-+- \s
+                2 | |\s
+                Kommando:""");
     }
 
     @Test
@@ -30,13 +29,14 @@ class GameTest {
 
         String actual = sut.getState();
 
-        assertThat(actual).isEqualTo(" A B C \n" +
-                "0X| | \n" +
-                " -+-+-  \n" +
-                "1 | | \n" +
-                " -+-+-  \n" +
-                "2 | | \n" +
-                "Kommando:");
+        assertThat(actual).isEqualTo("""
+                 A B C\s
+                0X| |\s
+                 -+-+- \s
+                1 | |\s
+                 -+-+- \s
+                2 | |\s
+                Kommando:""");
     }
 
     @Test
@@ -49,7 +49,7 @@ class GameTest {
     }
 
     @Test
-    void gameShowsWinner() {
+    void getStateWhenPlayerXWinsShowPlayerXAsWinner() {
         Game sut = new Game();
         sut.makeMove(new Command("A0"));
         sut.makeMove(new Command("B0"));
@@ -60,14 +60,39 @@ class GameTest {
         var actual = sut.getState();
 
         assertThat(sut.getWinner()).isEqualTo(Player.X);
-        assertThat(actual).isEqualTo(" A B C \n" +
-                "0X|O| \n" +
-                " -+-+-  \n" +
-                "1X|O| \n" +
-                " -+-+-  \n" +
-                "2X| | \n" +
-                "*** Spieler 1 gewinnt\n" +
-                "Kommando:");
+        assertThat(actual).isEqualTo("""
+                 A B C\s
+                0X|O|\s
+                 -+-+- \s
+                1X|O|\s
+                 -+-+- \s
+                2X| |\s
+                *** Spieler 1 gewinnt
+                Kommando:""");
+    }
+
+    @Test
+    void getStateWhenPlayerOWinsShowPlayerOAsWinner() {
+        Game sut = new Game();
+        sut.makeMove(new Command("A0"));
+        sut.makeMove(new Command("B0"));
+        sut.makeMove(new Command("A1"));
+        sut.makeMove(new Command("B1"));
+        sut.makeMove(new Command("C0"));
+        sut.makeMove(new Command("B2"));
+
+        var actual = sut.getState();
+
+        assertThat(sut.getWinner()).isEqualTo(Player.O);
+        assertThat(actual).isEqualTo("""
+                 A B C\s
+                0X|O|X
+                 -+-+- \s
+                1X|O|\s
+                 -+-+- \s
+                2 |O|\s
+                *** Spieler 2 gewinnt
+                Kommando:""");
     }
 
     @Test
@@ -103,39 +128,52 @@ class GameTest {
         sut.makeMove(new Command("A0"));
         sut.makeMove(new Command("neu"));
 
-        assertThat(sut.getState()).isEqualTo(" A B C \n" +
-                "0 | | \n" +
-                " -+-+-  \n" +
-                "1 | | \n" +
-                " -+-+-  \n" +
-                "2 | | \n" +
-                "Kommando:");
+        assertThat(sut.getState()).isEqualTo("""
+                 A B C\s
+                0 | |\s
+                 -+-+- \s
+                1 | |\s
+                 -+-+- \s
+                2 | |\s
+                Kommando:""");
     }
 
     @Test
     void stalemate() {
         Game sut = new Game();
 
-        var moves = List.of(
-                sut.makeMove(new Command("A0")),
-                sut.makeMove(new Command("B0")),
-                sut.makeMove(new Command("A1")),
-                sut.makeMove(new Command("B1")),
-                sut.makeMove(new Command("B2")),
-                sut.makeMove(new Command("A2")),
-                sut.makeMove(new Command("C0")),
-                sut.makeMove(new Command("C1")),
-                sut.makeMove(new Command("C2")));
 
-        var actual = sut.getState();
+        sut.makeMove(new Command("A0"));
+        sut.makeMove(new Command("B0"));
+        sut.makeMove(new Command("A1"));
+        sut.makeMove(new Command("B1"));
+        sut.makeMove(new Command("B2"));
+        sut.makeMove(new Command("A2"));
+        sut.makeMove(new Command("C0"));
+        sut.makeMove(new Command("C1"));
+        sut.makeMove(new Command("C2"));
 
-        assertThat(sut.getState()).isEqualTo(" A B C \n" +
-                "0X|O|X\n" +
-                " -+-+-  \n" +
-                "1X|O|O\n" +
-                " -+-+-  \n" +
-                "2O|X|X\n" +
-                "*** Kein Gewinner\n" +
-                "Kommando:");
+        sut.getState();
+
+        assertThat(sut.getState()).isEqualTo("""
+                 A B C\s
+                0X|O|X
+                 -+-+- \s
+                1X|O|O
+                 -+-+- \s
+                2O|X|X
+                *** Kein Gewinner
+                Kommando:""");
     }
+
+    @Test
+    void makeMoveWhenCommandEndeProvidedThenReturnControlWithoutPlayer() {
+        Game sut = new Game();
+
+        Operation actual = sut.makeMove(new Command("ende"));
+
+        assertThat(actual).isEqualTo(Operation.CONTROL);
+        assertThat(sut.getPlayer()).isEqualTo(Player.Empty);
+    }
+
 }
