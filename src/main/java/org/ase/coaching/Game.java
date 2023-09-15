@@ -24,13 +24,15 @@ public class Game {
             return Operation.GAME_OVER;
         }
 
-        if (command.equals(Command.ENDE)) {
-            currentPlayer = Player.Empty;
-            return Operation.CONTROL;
-        }
-        if (command.equals(Command.START) || command.equals(Command.NEU)) {
-            reset();
-            return Operation.CONTROL;
+        switch (command) {
+            case ENDE -> {
+                currentPlayer = Player.Empty;
+                return Operation.CONTROL;
+            }
+            case START, NEU -> {
+                reset();
+                return Operation.CONTROL;
+            }
         }
         Cell cell = field.getCell(command.getRow(), command.getColumn());
         if (cell.getPlayer() != Player.Empty) {
