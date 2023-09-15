@@ -2,7 +2,6 @@ package org.ase.coaching;
 
 public class Game {
 
-    final String action = "Kommando:";
     String winnerNotification = "";
     private Field field;
     private Player currentPlayer;
@@ -13,20 +12,10 @@ public class Game {
     }
 
     public String getState() {
-        return " A B C \n" +
-                "0%s|%s|%s\n".formatted(field.getCell(0, 0).getPlayer().getRepresentation(),
-                        field.getCell(0, 1).getPlayer().getRepresentation(),
-                        field.getCell(0, 2).getPlayer().getRepresentation()) +
-                " -+-+-  \n" +
-                "1%s|%s|%s\n".formatted(field.getCell(1, 0).getPlayer().getRepresentation(),
-                        field.getCell(1, 1).getPlayer().getRepresentation(),
-                        field.getCell(1, 2).getPlayer().getRepresentation()) +
-                " -+-+-  \n" +
-                "2%s|%s|%s\n".formatted(field.getCell(2, 0).getPlayer().getRepresentation(),
-                        field.getCell(2, 1).getPlayer().getRepresentation(),
-                        field.getCell(2, 2).getPlayer().getRepresentation()) +
+        return " A B C \n0%s|%s|%s\n -+-+-  \n1%s|%s|%s\n -+-+-  \n2%s|%s|%s\n"
+                .formatted(field.getCells().stream().map(Cell::getPlayer).map(Player::getRepresentation).toArray()) +
                 winnerNotification +
-                action;
+                "Kommando:";
     }
 
 
