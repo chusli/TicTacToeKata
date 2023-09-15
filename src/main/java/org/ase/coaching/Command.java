@@ -1,73 +1,72 @@
 package org.ase.coaching;
 
-import java.util.List;
-import java.util.Objects;
 import java.util.Scanner;
 
-public class Command {
-    private static final List<String> VALIDCOLUMNS = List.of("A", "B", "C");
-    private static final List<String> VALIDROWS = List.of("0", "1", "2");
-    private static final List<String> VALID_GAME_COMMANDS = List.of("ende", "start", "neu");
-    private final String command;
+public enum Command {
+    A0("A0", Operation.VALID_MOVE),
+    B0("B0", Operation.VALID_MOVE),
+    C0("C0", Operation.VALID_MOVE),
+    A1("A1", Operation.VALID_MOVE),
+    B1("B1", Operation.VALID_MOVE),
+    C1("C1", Operation.VALID_MOVE),
+    A2("A2", Operation.VALID_MOVE),
+    B2("B2", Operation.VALID_MOVE),
+    C2("C2", Operation.VALID_MOVE),
+    ENDE("ENDE", Operation.GAME_OVER),
+    START("START", Operation.CONTROL),
+    NEU("NEU", Operation.CONTROL);
 
-    public Command(String command) {
-        this.command = command;
+    private final String s;
+    private final Operation op;
+
+    Command(String s, Operation op) {
+        this.s = s;
+
+        this.op = op;
     }
 
-    public static List<Command> getMovingCommands() {
-        return VALIDCOLUMNS.stream()
-                .flatMap(column -> VALIDROWS.stream().map(row -> new Command(column + row)))
-                .toList();
+    public static Command getEnum(String value) {
+        return valueOf(value.toUpperCase());
     }
 
     public static Command readCommand() {
         Scanner in = new Scanner(System.in);
         Command command;
         do {
-            command = new Command(in.nextLine());
-        } while (command == null || !command.isValid());
+            try {
+                command = Command.getEnum(in.nextLine());
+            } catch (IllegalArgumentException exception) {
+                command = null;
+            }
+        } while (command == null);
         return command;
     }
 
-    public boolean isValid() {
-        if (command.length() != 2) {
-            return VALID_GAME_COMMANDS.contains(command);
+    public int getRow() {
+        if (op != Operation.VALID_MOVE) {
+            return -1;
         }
-        var firstLetter = command.substring(0, 1);
-        var secondLetter = command.substring(1, 2);
-
-        return VALIDCOLUMNS.contains(firstLetter) && VALIDROWS.contains(secondLetter);
+        return switch (s.substring(1, 2)) {
+            case "0" -> 0;
+            case "1" -> 1;
+            case "2" -> 2;
+            default -> throw new IllegalStateException("Unexpected value: " + s.substring(0, 1));
+        };
     }
 
     public int getColumn() {
-        return VALIDCOLUMNS.indexOf(command.substring(0, 1));
-    }
-
-    public int getRow() {
-        return VALIDROWS.indexOf(command.substring(1, 2));
-    }
-
-    @Override
-    public String toString() {
-        return "Command{" +
-                "command='" + command + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+        if (op != Operation.VALID_MOVE) {
+            return -1;
         }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Command command1 = (Command) o;
-        return Objects.equals(command, command1.command);
+        return switch (s.substring(0, 1)) {
+            case "A" -> 0;
+            case "B" -> 1;
+            case "C" -> 2;
+            default -> throw new IllegalStateException("Unexpected value: " + s.substring(0, 1));
+        };
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(command);
+    public Operation getOperation() {
+        return op;
     }
 }

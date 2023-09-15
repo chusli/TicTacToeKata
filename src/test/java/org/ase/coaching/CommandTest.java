@@ -1,63 +1,56 @@
 package org.ase.coaching;
 
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.List;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatException;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 class CommandTest {
+    private static Stream<Arguments> provideRows() {
+        return Stream.of(
+                Arguments.of(Command.A0, 0),
+                Arguments.of(Command.A1, 1),
+                Arguments.of(Command.A2, 2),
+                Arguments.of(Command.B0, 0),
+                Arguments.of(Command.B1, 1),
+                Arguments.of(Command.B2, 2),
+                Arguments.of(Command.C0, 0),
+                Arguments.of(Command.C1, 1),
+                Arguments.of(Command.C2, 2));
+    }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"A0", "A1", "A2", "B0", "B1", "B2", "C0", "C1", "C2", "ende", "start", "neu"})
-    void valid(String command) {
-        Command sut = new Command(command);
-
-        assertThat(sut.isValid()).isTrue();
+    private static Stream<Arguments> provideColumns() {
+        return Stream.of(
+                Arguments.of(Command.A0, 0),
+                Arguments.of(Command.A1, 0),
+                Arguments.of(Command.A2, 0),
+                Arguments.of(Command.B0, 1),
+                Arguments.of(Command.B1, 1),
+                Arguments.of(Command.B2, 1),
+                Arguments.of(Command.C0, 2),
+                Arguments.of(Command.C1, 2),
+                Arguments.of(Command.C2, 2));
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"A3", "D0", "abc", "00", "AA"})
-    void invalid(String command) {
-        Command sut = new Command(command);
-
-        assertThat(sut.isValid()).isFalse();
-    }
-
-    @Test
-    void getColumn() {
-        Command sut = new Command("B2");
-
-        assertThat(sut.getColumn()).isEqualTo(1);
-    }
-
-    @Test
-    void getRow() {
-        Command sut = new Command("B2");
-
-        assertThat(sut.getRow()).isEqualTo(2);
-    }
-
-    @Test
-    void getMovingCommands() {
-        List<Command> sut = Command.getMovingCommands();
-
-        assertThat(sut).containsExactlyInAnyOrder(
-                new Command("A0"),
-                new Command("A1"),
-                new Command("A2"),
-                new Command("B0"),
-                new Command("B1"),
-                new Command("B2"),
-                new Command("C0"),
-                new Command("C1"),
-                new Command("C2"));
+    @ValueSource(strings = {"A0", "A1", "A2", "B0", "B1", "B2", "C0", "C1", "C2", "ENDE", "START", "NEU",
+            "a0", "a1", "a2", "b0", "b1", "b2", "c0", "c1", "c2", "ende", "start", "neu"})
+    void getEnum(String command) {
+        assertDoesNotThrow(() -> Command.getEnum(command));
     }
 
     @Test
@@ -68,7 +61,7 @@ class CommandTest {
 
         Command actual = Command.readCommand();
 
-        assertThat(actual).isEqualTo(new Command("A0"));
+        assertThat(actual).isEqualTo(Command.A0);
     }
 
     @Test
@@ -78,5 +71,33 @@ class CommandTest {
         System.setIn(in);
 
         assertThatException().isThrownBy(Command::readCommand).isInstanceOf(NoSuchElementException.class);
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideRows")
+    void getRowWhenMoveCommandProvidedThenReturnRow(Command command, int expectedRow) {
+        assertThat(command.getRow()).isEqualTo(expectedRow);
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideColumns")
+    void getColumnWhenMoveCommandProvidedThenReturnColumn(Command command, int expectedColumn) {
+        assertThat(command.getColumn()).isEqualTo(expectedColumn);
+    }
+
+    @TestFactory
+    Stream<DynamicTest> getRowWhenNotMoveCommandProvidedThenReturnMinusOne() {
+        return Arrays.stream(Command.values())
+                .filter(command -> command.getOperation() != Operation.VALID_MOVE)
+                .map(command -> dynamicTest("GIVEN %s WHEN getRow THEN -1".formatted(command.name()),
+                        () -> assertThat(command.getRow()).isEqualTo(-1)));
+    }
+
+    @Test
+    Stream<DynamicTest> getColumnWhenNotMoveCommandProvidedThenReturnMinusOne() {
+        return Arrays.stream(Command.values())
+                .filter(command -> command.getOperation() != Operation.VALID_MOVE)
+                .map(command -> dynamicTest("GIVEN %s WHEN getColumn THEN -1".formatted(command.name()),
+                        () -> assertThat(command.getColumn()).isEqualTo(-1)));
     }
 }

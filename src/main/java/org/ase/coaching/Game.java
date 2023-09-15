@@ -24,11 +24,11 @@ public class Game {
             return Operation.GAME_OVER;
         }
 
-        if (command.equals(new Command("ende"))) {
+        if (command.equals(Command.ENDE)) {
             currentPlayer = Player.Empty;
             return Operation.CONTROL;
         }
-        if (command.equals(new Command("start")) || command.equals(new Command("neu"))) {
+        if (command.equals(Command.START) || command.equals(Command.NEU)) {
             reset();
             return Operation.CONTROL;
         }
